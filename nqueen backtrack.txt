@@ -1,0 +1,68 @@
+#include<iostream>
+#include<cmath>
+
+using namespace std;
+
+bool isSafe(int row, int col, int* placement) {
+    for (int i = 0; i < row; ++i) {
+        if (placement[i] == col || abs(placement[i] - col) == abs(i - row)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void printBoard(int* placement, int N) {
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < N; ++j) {
+            if (j == placement[i]) {
+                cout << "Q ";
+            } else {
+                cout << ". ";
+            }
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
+void solveNQueens(int row, int N, int* placement, int& solutions) {
+    if (row == N) {
+        // Found a solution, print the board
+        solutions++;
+        cout << "Solution #" << solutions << ":\n";
+        printBoard(placement, N);
+        return;
+    }
+
+    for (int col = 0; col < N; ++col) {
+        if (isSafe(row, col, placement)) {
+            placement[row] = col;
+            solveNQueens(row + 1, N, placement, solutions);
+            placement[row] = -1;  // Backtrack
+        }
+    }
+}
+
+int main() {
+    int N;
+    cout << "Enter the value of N for N-Queens problem: ";
+    cin >> N;
+
+    int* placement = new int[N];
+    for (int i = 0; i < N; ++i) {
+        placement[i] = -1;
+    }
+
+    int solutions = 0;
+
+    solveNQueens(0, N, placement, solutions);
+
+    if (solutions == 0) {
+        cout << "No solutions found for N = " << N << endl;
+    }
+
+    delete[] placement; // Don't forget to free the allocated memory
+
+    return 0;
+}
